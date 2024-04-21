@@ -36,16 +36,12 @@ def earthquake_by_id(id):
     return make_response(body, status)
 
 
-# The route should have the form /earthquakes/magnitude/<float:magnitude>.
-# The view should query the database to get all earthquakes having a magnitude greater than or equal to the parameter value, and return a JSON response containing the count of matching rows along with a list containing the data for each row.
 @app.route("/earthquakes/magnitude/<float:magnitude>")
 def earthquake_by_magnitude(magnitude):
-    earthquakes = Earthquake.query.filter(Earthquake.magnitude >= magnitude).all()
-    count = len(earthquakes)
-    body = {
-        "count": count,
-        "quakes": [earthquake.to_dict() for earthquake in earthquakes],
-    }
+    earthquakes = []
+    for earthquake in Earthquake.query.filter(Earthquake.magnitude >= magnitude).all():
+        earthquakes.append(earthquake.to_dict())
+    body = {"count": len(earthquakes), "quakes": earthquakes}
     return make_response(body, 200)
 
 
